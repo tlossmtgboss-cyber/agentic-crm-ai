@@ -1,0 +1,37 @@
+name: AI Scaffold / Codegen
+
+on:
+  workflow_dispatch:
+    inputs:
+      task:
+        description: 'Describe the task (e.g., "create CRM integration")'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  ai_scaffold:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r tools/scripts/requirements.txt
+
+      - name: Run AI Scaffold Script
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python tools/scripts/generate_scaffold.py \
+            --task "${{ github.event.inputs.task }}" \
+            --branch "ai-scaffold/${{ github.run_id }}"
