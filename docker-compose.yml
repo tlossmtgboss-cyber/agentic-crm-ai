@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  llm:
+    build: ./src/llm-layer
+    ports:
+      - "3001:3001"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+
+  planner:
+    build: ./src/planner
+    ports:
+      - "8000:8000"
+
+  actions:
+    build: ./src/actions
+    ports:
+      - "8001:8001"
